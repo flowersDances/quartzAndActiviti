@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="processEngineConfiguration"
+          class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!--nullCatalogMeansCurrent=true 定义流程文件的位置 未明确指定catalog将使用默认的或当前的catalog-->
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activiti7?nullCatalogMeansCurrent=true"/>
+        <property name="jdbcDriver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUsername" value="root"/>
+        <property name="jdbcPassword" value="123456"/>
+        <!--最大连接数 默认10-->
+        <property name="jdbcMaxActiveConnections" value="20"/>
+        <!-- Database configurations -->
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="asyncExecutorActivate" value="true"/>
+        <!-- mail server configurations 需要用可以加，也可以不加-->
+        <!--<property name="mailServerHost" value="mail.my-corp.com" />-->
+        <!--<property name="mailServerPort" value="5025" />-->
+    </bean>
+
+</beans>
