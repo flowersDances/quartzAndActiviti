@@ -31,6 +31,6 @@ bpmn:
   filePath: processes
 
 
-
-user:
-  home: C:\Users\RuoLi
+# 上传路径
+file:
+  upload-path: F:\processes\

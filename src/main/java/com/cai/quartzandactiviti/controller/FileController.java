@@ -14,18 +14,21 @@ import java.io.*;
 @RequestMapping("/file")
 @Slf4j
 public class FileController {
-    @Value("${user.home}")
-    private String userHome;// C:\Users\RuoLi
+    @Value("${file.upload-path}")
+    private String uploadPath;
+
+    /**
+     * 上传文件
+     * @param file 文件
+     * @return 返回上传结果
+     */
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file) throws IOException{
         // 处理上传的文件
         if (!file.isEmpty()) {
             String uploadFileName=file.getOriginalFilename();
-            log.debug("上传文件："+uploadFileName);
-            // 获取桌面目录
-            String desktopPath = userHome + "/Desktop/";
-            // 创建一个目标文件对象
-            File destFile = new File(desktopPath + uploadFileName);
+            log.debug("上传路径：{},上传文件：{}",uploadPath,uploadFileName);
+            File destFile = new File(uploadPath + uploadFileName);
             // 将上传的文件写入到目标文件
             file.transferTo(destFile);
             // 文件上传成功
