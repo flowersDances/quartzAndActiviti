@@ -1,0 +1,7 @@
+POST http://localhost:8083/bpmn/deploy
+Content-Type: application/json
+
+{
+  "processImgName": "sfsd",
+  "processFileName": "FinalEvent-end2.bpmn20.xml"
+}

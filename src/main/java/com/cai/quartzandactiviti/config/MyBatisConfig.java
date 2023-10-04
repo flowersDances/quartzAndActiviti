@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Slf4j
-@MapperScan("com.cai.quartzandactiviti")
+@MapperScan("com.cai.quartzandactiviti.dao")
 public class MyBatisConfig {
     public MyBatisConfig() {
         log.debug("创建了【{}}】",this.getClass().getSimpleName());

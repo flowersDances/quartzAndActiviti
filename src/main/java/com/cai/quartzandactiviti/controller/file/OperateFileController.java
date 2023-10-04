@@ -1,6 +1,7 @@
 package com.cai.quartzandactiviti.controller.file;
 
 import com.cai.quartzandactiviti.response.Result;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-
+@Api(tags = "操作文件")
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/operate")
 @Slf4j
-public class FileController {
+public class OperateFileController {
     @Value("${file.upload-path}")
     private String uploadPath;
 
@@ -33,7 +34,7 @@ public class FileController {
             // 将上传的文件写入到目标文件
             file.transferTo(destFile);
             // 文件上传成功
-            return Result.ok();
+            return Result.ok("fileName",uploadFileName);
         }
         return Result.error();
     }

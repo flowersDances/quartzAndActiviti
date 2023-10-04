@@ -1,0 +1,13 @@
+package com.cai.quartzandactiviti.service;
+
+public interface DeploymentService {
+    /**
+     * 读取类路径下文件
+     */
+    boolean createDeploymentClasspath(String fileName, String name);
+
+    /**
+     * 读取其他位置文件
+     */
+    boolean createDeployment(String fileName,String name);
+}
