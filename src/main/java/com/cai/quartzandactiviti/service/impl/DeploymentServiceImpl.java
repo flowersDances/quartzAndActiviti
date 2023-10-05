@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 @Component
 public class DeploymentServiceImpl implements DeploymentService {
@@ -19,6 +20,8 @@ public class DeploymentServiceImpl implements DeploymentService {
     private RepositoryService repositoryService;
     @Value("${file.upload-path}")
     private String filePath;
+    @Value("${bpmn.fileClassPath}")
+    private String fileClassPath;
     /**
      * 部署bpmn文件
      * @param fileName 流程文件名
@@ -26,9 +29,10 @@ public class DeploymentServiceImpl implements DeploymentService {
      * @return 部署结果
      */
     @Override
-    public boolean createDeploymentClasspath(String fileName, String name) {
+    public boolean createDeploymentClasspath(String fileName,String filePictureName, String name) {
         Deployment deployment = repositoryService.createDeployment()
                 .addClasspathResource(filePath+fileName)
+                .addClasspathResource(fileClassPath+"/"+filePictureName)
                 .name(name)
                 .deploy();
         if (deployment.getId().isEmpty()){
@@ -38,12 +42,14 @@ public class DeploymentServiceImpl implements DeploymentService {
     }
 
     @Override
-    public boolean createDeployment(String fileName,String name) {
+    public boolean createDeployment(String fileName,String filePictureName,String name) {
         try {
-            File file = new File(filePath+fileName);
-            FileInputStream fis=new FileInputStream(file);
-            DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().addInputStream(name, fis);
-            Deployment deploy = deploymentBuilder.deploy();
+            InputStream inputStream1 = new FileInputStream(filePath + fileName);
+            InputStream inputStream2 = new FileInputStream(filePath + filePictureName);
+            Deployment deploy = repositoryService.createDeployment()
+                    //参数1 用于识别资源 参数2 bpmn文件
+                    .addInputStream(fileName, inputStream1)
+                    .addInputStream(filePictureName, inputStream2).name(name).deploy();
             System.out.println(deploy.getId());
             if (deploy.getId().isEmpty()){
                 return false;

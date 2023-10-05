@@ -30,7 +30,7 @@ logging:
 
 
 bpmn:
-  filePath: processes
+  fileClassPath: processes
 
 
 # 上传路径

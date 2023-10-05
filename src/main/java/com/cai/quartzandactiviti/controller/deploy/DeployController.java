@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.*;
 public class DeployController {
     @Autowired
     DeploymentService deploymentService;
+
     /**
      * 根据流程图部署文件
      */
     @PostMapping("deploy")
     public Result deployFile(@RequestBody ProcessFile processFile) {
-        String fileName=processFile.getProcessFileName();
-        boolean deployment = deploymentService.createDeployment(fileName, fileName);
-        if (deployment){
+        // bpmn文件名称
+        String fileName = processFile.getProcessFileName();
+        // 图片名称
+        String filePictureName = processFile.getFilePictureName();
+        //流程部署
+        boolean deployment = deploymentService.createDeployment(fileName, filePictureName, fileName);
+        if (deployment) {
             return Result.ok();
         }
         return Result.error();
