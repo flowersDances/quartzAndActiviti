@@ -1,6 +1,5 @@
 package com.cai.quartzandactiviti;
 
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
