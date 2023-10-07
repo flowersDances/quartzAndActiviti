@@ -11,7 +11,7 @@ public class GlobalException {
         return Result.error(StatusCode.CUSTOM_ERROR.getCode(),StatusCode.CUSTOM_ERROR.getMessage());
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(RuntimeException.class)
     public Result handleThrowable(){
         return Result.error(StatusCode.SERVICE_ERROR.getCode(), StatusCode.SERVICE_ERROR.getMessage());
     }

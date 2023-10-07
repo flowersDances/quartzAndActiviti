@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum StatusCode {
-    SERVICE_ERROR(500, "服务繁忙", "服务器出现故障"),
+    SERVICE_ERROR(500, "请求执行失败", "服务器出现故障"),
     CUSTOM_ERROR(600, "服务操作失败", "自定义异常")
         ;
     private final Integer code;

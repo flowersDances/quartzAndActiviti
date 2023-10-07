@@ -46,6 +46,11 @@ public class ProcessServiceImpl implements ProcessService {
         log.debug("启动流程实例成功");
         return true;
     }
+    /**
+     * 根据部署流程id和业务id启动流程实例
+     * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
+     * @return 返回流程启动结果
+     */
 
     public boolean startProcess(String deploymentId) {
         String processDefinitionId=null;
@@ -66,6 +71,13 @@ public class ProcessServiceImpl implements ProcessService {
         log.debug("启动流程实例成功");
         return true;
     }
+    /**
+     * 根据部署流程id和业务id启动流程实例
+     * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
+     * @param businessKey 自定义业务流程id（自定义）
+     * @param map 流程部署时候添加的参数
+     * @return 返回流程启动结果
+     */
     public boolean startProcess(String deploymentId, String businessKey, Map<String,Object> map) {
         String processDefinitionId=null;
         List<ProcessDefinition> processDefinitions = repositoryService

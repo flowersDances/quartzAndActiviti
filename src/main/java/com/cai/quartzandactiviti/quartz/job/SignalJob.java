@@ -24,34 +24,48 @@ public class SignalJob implements Job, DeploymentConstant {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         //执行一次检查缓存中是否有key有的话就删除
         FLAG=delSignalKey(FLAG);
-        log.debug("SignalJob执行中...");
-        RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) SpringContextUtil.getBean("redisTemplate");
-        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(SIGNAL))) {
-            if (Objects.equals(operations.get(SIGNAL), SIGNAL_ACTIVE_VALUE)) {
-                //触发信号事件
-                log.debug("信号事件准备触发");
-                signalEventReceived();
-                log.debug("信号事件完成触发");
-                //删除key
-                redisTemplate.delete(SIGNAL);
-            }
+        if (hasActiveSignalKey()) {
+            //触发信号事件
+            signalEventReceived();
+            //删除key
+            getRedisTemplate().delete(SIGNAL);
         }
     }
-
-    public void signalEventReceived() {
+    /**
+     * 触发服务任务
+     */
+    private void signalEventReceived() {
         ProcessTaskServiceImpl processTaskService = (ProcessTaskServiceImpl) SpringContextUtil.getBean("processTaskServiceImpl");
         processTaskService.signalEventReceived(SIGNAL_NAME);
     }
-
-    public boolean delSignalKey(boolean flag){
+    private boolean delSignalKey(boolean flag){
         if (flag){
             return true;
         }
-        RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) SpringContextUtil.getBean("redisTemplate");
+        RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(SIGNAL))) {
             redisTemplate.delete(SIGNAL);
         }
         return true;
+    }
+    /**
+     * 是否激活信号
+     */
+    private boolean hasActiveSignalKey(){
+        RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(SIGNAL))) {
+            if (Objects.equals(operations.get(SIGNAL), SIGNAL_ACTIVE_VALUE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取redisTemplate
+     */
+    private RedisTemplate<String, Object> getRedisTemplate(){
+        return (RedisTemplate<String, Object>) SpringContextUtil.getBean("redisTemplate");
     }
 }
