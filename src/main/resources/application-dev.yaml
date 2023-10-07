@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/MyPostSQL
+    url: jdbc:postgresql://127.0.0.1:5432/myActiviti
     username: postgres
     password: 123456
     driverClassName: org.postgresql.Driver

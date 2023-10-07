@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Slf4j
 @RequestMapping("bpmn")
@@ -20,14 +23,16 @@ public class DeployController {
     @PostMapping("deploy")
     public Result deployFile(@RequestBody ProcessFile processFile) {
         // bpmn文件名称
-        String fileName = processFile.getProcessFileName();
+        String processFileName = processFile.getProcessFileName();
         // 图片名称
-        String filePictureName = processFile.getFilePictureName();
+        String processImgName = processFile.getProcessImgName();
         //流程部署
-        boolean deployment = deploymentService.createDeployment(fileName, filePictureName, fileName);
+        boolean deployment = deploymentService.createDeployment(processFileName, processImgName, processFileName);
         if (deployment) {
-            return Result.ok();
+            Map<String,String> map=new HashMap<>();
+            map.put("deploymentId", deploymentService.getDeploymentId());
+            return Result.ok("data",map);
         }
-        return Result.error();
+        return Result.error("部署失败");
     }
 }

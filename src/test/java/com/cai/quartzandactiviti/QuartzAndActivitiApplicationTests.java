@@ -38,8 +38,9 @@ class QuartzAndActivitiApplicationTests {
     @Test
     void contextLoads() {
         Deployment deployment = repositoryService.createDeployment()
-                .addClasspathResource("processes/SignalDemo2.bpmn20.xml")
-                .name("测试流程")
+                .addClasspathResource("processes/SpringDemo1.bpmn20.xml")
+                .addClasspathResource("processes/SpringDemo1.png")
+                .name("SpringBoot整合流程图")
                 .deploy();
     }
 
@@ -82,7 +83,7 @@ class QuartzAndActivitiApplicationTests {
     @Test
     void initProcessInstance() {
         // 流程定义KEY
-        String processDefinitionKey = "Part1_Deployment";
+        String processDefinitionKey = "SpringDemo1:3:a5b3ce71-64b0-11ee-a541-005056c00001";
         // 业务表KEY（用于把业务数据与Activiti7流程数据相关联）
         String businessKey = "4208169753200945";
         // 参数
@@ -96,7 +97,7 @@ class QuartzAndActivitiApplicationTests {
      */
     @Test
     void getProcessInstance() {
-        String processInstanceId = "a2b64646-5da7-11ee-8d5d-005056c00001";
+        String processInstanceId = "SpringDemo1:3:a5b3ce71-64b0-11ee-a541-005056c00001";
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         System.out.println("ProcessInstanceId：" + processInstance.getProcessInstanceId());
         System.out.println("ProcessDefinitionId：" + processInstance.getProcessDefinitionId());

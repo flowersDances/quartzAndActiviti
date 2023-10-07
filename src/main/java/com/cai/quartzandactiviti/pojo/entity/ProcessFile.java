@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class ProcessFile {
-    private String filePictureName;
+    private String processImgName;
     private String processFileName;
 
 }

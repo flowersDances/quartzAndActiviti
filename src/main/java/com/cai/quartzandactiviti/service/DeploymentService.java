@@ -10,4 +10,10 @@ public interface DeploymentService {
      * 读取其他位置文件
      */
     boolean createDeployment(String fileName,String filePictureName,String name);
+
+    /**
+     * 获取部署流程id
+     * @return 部署流程id
+     */
+    String getDeploymentId();
 }

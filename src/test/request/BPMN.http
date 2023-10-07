@@ -1,7 +1,17 @@
+### 部署流程实例
 POST http://localhost:8083/bpmn/deploy
 Content-Type: application/json
 
 {
-  "processImgName": "sfsd",
-  "processFileName": "FinalEvent-end2.bpmn20.xml"
+  "processImgName": "SpringDemo1.png",
+  "processFileName": "SpringDemo1.bpmn20.xml"
+}
+
+### 启动实例
+POST http://localhost:8083/process/startProcess
+Content-Type: application/json
+
+{
+  "deploymentId": "SpringDemo1:1:10f89639-6359-11ee-b66b-005056c00001",
+  "businessKey": "caizhiqiang"
 }

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Api(tags = "操作文件")
 @RestController
 @RequestMapping("/operate")
@@ -21,20 +24,34 @@ public class OperateFileController {
 
     /**
      * 上传文件
-     * @param file 文件
+     * @param flowchart 流程图文件
+     * @param picture 流程图
      * @return 返回上传结果
      */
     @PostMapping("/upload")
-    public Result uploadFile(@RequestParam("file") MultipartFile file) throws IOException{
+    public Result uploadFile(@RequestParam("flowchart") MultipartFile flowchart
+            ,@RequestParam("picture") MultipartFile picture){
         // 处理上传的文件
-        if (!file.isEmpty()) {
-            String uploadFileName=file.getOriginalFilename();
-            log.debug("上传路径：{},上传文件：{}",uploadPath,uploadFileName);
-            File destFile = new File(uploadPath + uploadFileName);
+        if (!flowchart.isEmpty()&&!picture.isEmpty()) {
+            String uploadFlowchartName=flowchart.getOriginalFilename();
+            String uploadPictureName=picture.getOriginalFilename();
+            log.debug("上传路径：{},上传文件：{}",uploadPath,uploadFlowchartName);
+            log.debug("上传路径：{},上传图片：{}",uploadPath,uploadPictureName);
+            File destFile = new File(uploadPath + uploadFlowchartName);
+            File destPicture = new File(uploadPath + uploadPictureName);
             // 将上传的文件写入到目标文件
-            file.transferTo(destFile);
+            try {
+                flowchart.transferTo(destFile);
+                picture.transferTo(destPicture);
+            } catch (IOException e) {
+                log.warn("文件写入异常");
+                throw new RuntimeException(e);
+            }
             // 文件上传成功
-            return Result.ok("fileName",uploadFileName);
+            List<String> listFileName=new ArrayList<>();
+            listFileName.add(uploadFlowchartName);
+            listFileName.add(uploadFlowchartName);
+            return Result.ok("file",listFileName);
         }
         return Result.error();
     }
