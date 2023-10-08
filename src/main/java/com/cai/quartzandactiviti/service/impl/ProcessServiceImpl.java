@@ -70,7 +70,6 @@ public class ProcessServiceImpl implements ProcessService {
     public Integer getEventSize() {
         String processInstanceId = (String) redisTemplate.opsForValue().get("processInstanceId");
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
-        System.out.println("activeActivityIds.size():" + activeActivityIds.size());
         return activeActivityIds.size();
     }
 
@@ -121,11 +120,5 @@ public class ProcessServiceImpl implements ProcessService {
         }
         log.warn("启动流程实例失败");
         return false;
-
-
-
-
-
-
     }
 }

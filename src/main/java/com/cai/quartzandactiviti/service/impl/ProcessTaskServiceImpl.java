@@ -4,7 +4,6 @@ import com.cai.quartzandactiviti.service.ProcessTaskService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -47,18 +46,5 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             }
         }
         return true;
-        //if (Boolean.TRUE.equals(redisTemplate.hasKey("deploymentId"))) {
-        //    return false;
-        //}
-        //String deploymentId = redisTemplate.opsForValue().get("deploymentId");
-        //ProcessInstance processInstance = runtimeService
-        //        .createProcessInstanceQuery()
-        //        .processInstanceId(deploymentId)
-        //        .singleResult();
-        //if (processInstance != null) {
-        //    return false;
-        //}
-        //redisTemplate.delete("deploymentId");
-        //return true;
     }
 }
