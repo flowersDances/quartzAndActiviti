@@ -20,91 +20,112 @@ public class ProcessServiceImpl implements ProcessService {
     private RuntimeService runtimeService;
     @Autowired
     private RepositoryService repositoryService;
-    private static String INSTANCE_ID;
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
+
     /**
      * 根据部署流程id和业务id启动流程实例
-     * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
+     *
      * @param businessKey 自定义业务流程id（自定义）
      * @return 返回流程启动结果
      */
     @Override
-    public boolean startProcess(String deploymentId,String businessKey) {
-        String processDefinitionId=null;
-        List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery()
-                .deploymentId(deploymentId)
-                .list();
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionId=processDefinition.getId();
-        }
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId, businessKey);
-        INSTANCE_ID=processInstance.getId();
-        if (INSTANCE_ID.isEmpty()){
-            log.warn("启动流程实例失败");
-            return false;
-        }
-        log.debug("启动流程实例成功");
-        return true;
+    public boolean startProcess(String businessKey) {
+        String deploymentId = (String) redisTemplate.opsForValue().get("deploymentId");
+        ProcessInstance processInstance = runtimeService
+                .startProcessInstanceById(getProcessDefinitionId(deploymentId), businessKey);
+        return startProcessInstance(processInstance);
     }
+
     /**
      * 根据部署流程id和业务id启动流程实例
-     * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
+     *
      * @return 返回流程启动结果
      */
-    public boolean startProcess(String deploymentId) {
-        String processDefinitionId=null;
-        List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery()
-                .deploymentId(deploymentId)
-                .list();
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionId=processDefinition.getId();
-        }
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
-        INSTANCE_ID=processInstance.getId();
-        if (processInstance.getId().isEmpty()){
-            log.warn("启动流程实例失败");
-            return false;
-        }
-        log.debug("启动流程实例成功");
-        return true;
+    public boolean startProcess() {
+        String deploymentId = (String) redisTemplate.opsForValue().get("deploymentId");
+        ProcessInstance processInstance = runtimeService
+                .startProcessInstanceById(getProcessDefinitionId(deploymentId));
+        return startProcessInstance(processInstance);
     }
+
     /**
      * 根据部署流程id和业务id启动流程实例
-     * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
+     *
      * @param businessKey 自定义业务流程id（自定义）
-     * @param map 流程部署时候添加的参数
+     * @param map         流程部署时候添加的参数
      * @return 返回流程启动结果
      */
-    public boolean startProcess(String deploymentId, String businessKey, Map<String,Object> map) {
-        String processDefinitionId=null;
-        List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery()
-                .deploymentId(deploymentId)
-                .list();
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionId=processDefinition.getId();
-        }
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId,businessKey,map);
-        INSTANCE_ID=processInstance.getId();
-        if (INSTANCE_ID.isEmpty()){
-            log.warn("启动流程实例失败");
-            return false;
-        }
-        log.debug("启动流程实例成功");
-        return true;
+    public boolean startProcess(String businessKey, Map<String, Object> map) {
+        String deploymentId = (String) redisTemplate.opsForValue().get("deploymentId");
+        ProcessInstance processInstance = runtimeService
+                .startProcessInstanceById(getProcessDefinitionId(deploymentId), businessKey, map);
+        return startProcessInstance(processInstance);
     }
+
     /**
      * 获取实例的事件数量
      */
     @Override
     public Integer getEventSize() {
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(INSTANCE_ID);
+        String processInstanceId = (String) redisTemplate.opsForValue().get("processInstanceId");
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
+        System.out.println("activeActivityIds.size():" + activeActivityIds.size());
         return activeActivityIds.size();
+    }
+
+    /**
+     * 根据流程实例获取流程定义id和流程实例id
+     *
+     * @param processInstance 流程实例
+     */
+    public void setProcessCacheData(ProcessInstance processInstance) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey("process"))) {
+            redisTemplate.delete("process");
+        }
+        String processDefinitionId = processInstance.getProcessDefinitionId();
+        String processInstanceId = processInstance.getProcessInstanceId();
+        redisTemplate.opsForHash().put("process", processDefinitionId, processInstanceId);
+    }
+
+    /**
+     * 根据部署id获取流程定义id
+     *
+     * @param deploymentId 部署id
+     * @return 流程定义id
+     */
+    private String getProcessDefinitionId(String deploymentId) {
+        String processDefinitionId = null;
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deploymentId)
+                .list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processDefinitionId = processDefinition.getId();
+        }
+        return processDefinitionId;
+    }
+
+    private boolean startProcessInstance(ProcessInstance processInstance) {
+        //把实例id和定义id存到缓存
+        redisTemplate.delete("processInstanceId");
+
+        redisTemplate.opsForValue().set("processInstanceId", processInstance.getId());
+
+        setProcessCacheData(processInstance);
+
+        if (!processInstance.getId().isEmpty()){
+            log.debug("启动流程实例成功");
+            return true;
+        }
+        log.warn("启动流程实例失败");
+        return false;
+
+
+
+
+
+
     }
 }

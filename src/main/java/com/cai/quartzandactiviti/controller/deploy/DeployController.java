@@ -6,17 +6,12 @@ import com.cai.quartzandactiviti.service.DeploymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @Slf4j
 @RequestMapping("bpmn")
 public class DeployController {
     @Autowired
     DeploymentService deploymentService;
-
     /**
      * 根据流程图部署文件
      */
@@ -29,9 +24,7 @@ public class DeployController {
         //流程部署
         boolean deployment = deploymentService.createDeployment(processFileName, processImgName, processFileName);
         if (deployment) {
-            Map<String,String> map=new HashMap<>();
-            map.put("deploymentId", deploymentService.getDeploymentId());
-            return Result.ok("data",map);
+            return Result.ok("部署成功");
         }
         return Result.error("部署失败");
     }

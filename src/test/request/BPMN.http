@@ -11,9 +11,6 @@ Content-Type: application/json
 POST http://localhost:8083/process/startProcess
 Content-Type: application/json
 
-{
-  "deploymentId": "f192b200-6591-11ee-ba2b-005056c00001"
-}
 
 ### 开启任务调度
 GET http://localhost:8083/process/startScheduler

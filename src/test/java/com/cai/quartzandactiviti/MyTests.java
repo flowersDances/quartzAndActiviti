@@ -3,16 +3,24 @@ package com.cai.quartzandactiviti;
 import com.cai.quartzandactiviti.service.DeploymentService;
 import com.cai.quartzandactiviti.service.ProcessService;
 import com.cai.quartzandactiviti.service.ProcessTaskService;
+import com.cai.quartzandactiviti.service.impl.ProcessTaskServiceImpl;
+import com.cai.quartzandactiviti.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @SpringBootTest
@@ -31,6 +39,11 @@ public class MyTests {
 
     @Autowired
     private ProcessTaskService processTaskService;
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private HistoryService historyService;
 
     //部署
     @Test
@@ -39,13 +52,12 @@ public class MyTests {
                 "SignalDemo2.bpmn20.xml",
                 "SignalDemo2.png",
                 "springboot整合流程-并行网关");
-        System.out.println(deploymentService.getDeploymentId());
     }
 
     //启动
     @Test
     public void listSignals() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById("SignalDemo2:1:8dc6e5c1-6577-11ee-a7d3-005056c00001");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById("38f1ba7c-65a1-11ee-a71a-005056c00001");
         processInstance.getProcessInstanceId();
         if (processInstance.getId().isEmpty()){
             log.warn("启动流程实例失败");
@@ -77,5 +89,39 @@ public class MyTests {
         //processTaskService.signalEventReceived("1");
         //processTaskService.signalEventReceived("2");
         processTaskService.signalEventReceived("3");
+    }
+
+
+    /**
+     * 部署流程后根据得到的deploymentId查询processDefinitionId
+     * 例如查询根据 fea46d08-65a2-11ee-a5a9-005056c00001 -->
+     * SignalDemo2:1:febfe44b-65a2-11ee-a5a9-005056c00001
+     */
+    @Test
+    void getProcessDefinitionId() {
+        String processDefinitionId = null;
+        String deploymentId = "fea46d08-65a2-11ee-a5a9-005056c00001";
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deploymentId)
+                .list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processDefinitionId = processDefinition.getId();
+        }
+        System.out.println(processDefinitionId);
+    }
+
+
+    //查看流程没有结束的流程定义id
+    @Test
+    void isComplete() {
+        //List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+        //for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+        //    if (historicProcessInstance.getEndTime()==null){
+        //        System.out.println(historicProcessInstance.getProcessDefinitionId());
+        //    }
+        //}
+
     }
 }

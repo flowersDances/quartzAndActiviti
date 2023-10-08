@@ -96,13 +96,17 @@ class QuartzAndActivitiApplicationTests {
      */
     @Test
     void getProcessInstance() {
-        String processInstanceId = "SpringDemo1:3:a5b3ce71-64b0-11ee-a541-005056c00001";
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        String processInstanceId = "88319ac0-65a7-11ee-ac3f-005056c00001";
+        ProcessInstance processInstance = runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .singleResult();
         System.out.println("ProcessInstanceId：" + processInstance.getProcessInstanceId());
         System.out.println("ProcessDefinitionId：" + processInstance.getProcessDefinitionId());
         System.out.println("isEnded：" + processInstance.isEnded());
         System.out.println("isSuspended：" + processInstance.isSuspended());
     }
+
 
     /**
      * 查询流程实例列表

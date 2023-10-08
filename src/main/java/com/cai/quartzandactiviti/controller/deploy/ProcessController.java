@@ -1,6 +1,7 @@
 package com.cai.quartzandactiviti.controller.deploy;
 
 import com.cai.quartzandactiviti.pojo.entity.ProcessDeploy;
+import com.cai.quartzandactiviti.quartz.scheduler.ProcessScheduler;
 import com.cai.quartzandactiviti.quartz.scheduler.SignalScheduler;
 import com.cai.quartzandactiviti.response.Result;
 import com.cai.quartzandactiviti.service.ProcessService;
@@ -14,16 +15,16 @@ public class ProcessController {
     private ProcessService processService;
 
     @Autowired
-    private SignalScheduler scheduler;
+    private SignalScheduler signalScheduler;
+    @Autowired
+    private ProcessScheduler processScheduler;
 
     /**
      * 根据部署流程id启动流程实例
-     * @param processDeploy 流程实例对象
      */
     @PostMapping("/startProcess")
-    public Result startProcessInstance(@RequestBody ProcessDeploy processDeploy){
-        String deploymentId=processDeploy.getDeploymentId();
-        boolean startProcessStatus = processService.startProcess(deploymentId);
+    public Result startProcessInstance(){
+        boolean startProcessStatus = processService.startProcess();
         if (startProcessStatus) {
             return Result.ok("实例启动成功");
         }
@@ -35,7 +36,8 @@ public class ProcessController {
      */
     @GetMapping("/startScheduler")
     public Result startScheduler(){
-        scheduler.listenerRedisData();
+        signalScheduler.listenerRedisData();
+        processScheduler.listenerRedisData();
         return Result.ok();
     }
 }

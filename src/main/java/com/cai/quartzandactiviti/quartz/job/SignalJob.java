@@ -1,6 +1,5 @@
 package com.cai.quartzandactiviti.quartz.job;
 
-import com.cai.quartzandactiviti.service.ProcessTaskService;
 import com.cai.quartzandactiviti.service.impl.ProcessServiceImpl;
 import com.cai.quartzandactiviti.service.impl.ProcessTaskServiceImpl;
 import com.cai.quartzandactiviti.utils.DeploymentConstant;
@@ -13,8 +12,6 @@ import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -64,8 +61,7 @@ public class SignalJob implements Job, DeploymentConstant {
         RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(SIGNAL))) {
-            log.debug("事件数量：" + getEventSize());
-            //todo 存入1或者2或者3 都触发服务任务
+            //存入1或者2或者3 都触发服务任务
             getNum = (Integer) operations.get(SIGNAL);
             for (Integer i = 1; i <= EVENT_COUNT; i++) {
                 if (i.equals(getNum)) {

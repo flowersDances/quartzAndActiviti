@@ -6,4 +6,6 @@ public interface ProcessTaskService {
      * @param signalName 信号名
      */
     void signalEventReceived(String signalName);
+
+    boolean isCompleteTask();
 }

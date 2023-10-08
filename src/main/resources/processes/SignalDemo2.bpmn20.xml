@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
-  <signal id="signal1" name="signal1" activiti:scope="global"></signal>
-  <signal id="signal2" name="signal2" activiti:scope="global"></signal>
-  <signal id="signal3" name="signal3" activiti:scope="global"></signal>
+  <signal id="signal1" name="1" activiti:scope="global"></signal>
+  <signal id="signal2" name="2" activiti:scope="global"></signal>
+  <signal id="signal3" name="3" activiti:scope="global"></signal>
   <process id="SignalDemo2" name="SignalDemo2" isExecutable="true">
     <documentation>springboot整合，并行网关</documentation>
     <startEvent id="startEvent1"></startEvent>

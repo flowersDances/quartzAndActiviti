@@ -32,8 +32,6 @@ public class DeploymentServiceImpl implements DeploymentService, DeploymentConst
     private String filePath;
     @Value("${bpmn.fileClassPath}")
     private String fileClassPath;
-    private static String DEPLOY_ID;
-
     /**
      * 部署bpmn文件 类路径下部署
      * @param fileName 流程文件名
@@ -51,10 +49,9 @@ public class DeploymentServiceImpl implements DeploymentService, DeploymentConst
             log.warn("{} 流程文件部署失败", fileName);
             return false;
         }
-        DEPLOY_ID = deployment.getId();
+        //获取流程部署id 存入到缓存
+        redisTemplate.opsForValue().set("deploymentId",deployment.getId());
         log.debug("{} 流程文件部署成功", fileName);
-        //文件名存放到缓存
-        putCacheData(fileName, DEPLOY_ID);
         return true;
     }
 
@@ -73,10 +70,8 @@ public class DeploymentServiceImpl implements DeploymentService, DeploymentConst
                     //参数1 用于识别资源 参数2 bpmn文件
                     .addInputStream(fileName, inputStream1)
                     .addInputStream(filePictureName, inputStream2).name(name).deploy();
-            //获取流程部署id
-            DEPLOY_ID = deploy.getId();
-            //文件名存放到缓存
-            putCacheData(fileName, DEPLOY_ID);
+            //获取流程部署id 存入到缓存
+            redisTemplate.opsForValue().set("deploymentId",deploy.getId());
             log.debug("{} 流程文件部署成功", fileName);
             inputStream1.close();
             inputStream2.close();
@@ -88,26 +83,5 @@ public class DeploymentServiceImpl implements DeploymentService, DeploymentConst
             throw new RuntimeException(e);
         }
         return true;
-    }
-
-    @Override
-    public String getDeploymentId() {
-        return DEPLOY_ID;
-    }
-
-    private void putCacheData(String fileName, String deployId) {
-        //向redis中添加部署的文件名
-        HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
-
-        //根据流程id查询版本
-        List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery()
-                .deploymentId(deployId)
-                .list();
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            VERSION = processDefinition.getVersion();
-        }
-
-        operations.put(fileName, VERSION + "", deployId);
     }
 }
