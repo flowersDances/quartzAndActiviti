@@ -12,5 +12,5 @@ public interface DeploymentConstant {
     /**
      * 信号名
      */
-    String SIGNAL_NAME="signal01";
+    String SIGNAL_NAME="signal1";
 }

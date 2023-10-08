@@ -7,6 +7,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +20,9 @@ public class ProcessServiceImpl implements ProcessService {
     private RuntimeService runtimeService;
     @Autowired
     private RepositoryService repositoryService;
-    private static String PROCESS_INSTANCE_ID;
+    private static String INSTANCE_ID;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
     /**
      * 根据部署流程id和业务id启动流程实例
      * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
@@ -38,8 +41,8 @@ public class ProcessServiceImpl implements ProcessService {
             processDefinitionId=processDefinition.getId();
         }
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId, businessKey);
-        PROCESS_INSTANCE_ID=processInstance.getProcessInstanceId();
-        if (PROCESS_INSTANCE_ID.isEmpty()){
+        INSTANCE_ID=processInstance.getId();
+        if (INSTANCE_ID.isEmpty()){
             log.warn("启动流程实例失败");
             return false;
         }
@@ -51,7 +54,6 @@ public class ProcessServiceImpl implements ProcessService {
      * @param deploymentId 流程id 例：b28b20bc-64be-11ee-8a21-005056c00001
      * @return 返回流程启动结果
      */
-
     public boolean startProcess(String deploymentId) {
         String processDefinitionId=null;
         List<ProcessDefinition> processDefinitions = repositoryService
@@ -63,8 +65,8 @@ public class ProcessServiceImpl implements ProcessService {
             processDefinitionId=processDefinition.getId();
         }
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
-        PROCESS_INSTANCE_ID=processInstance.getProcessInstanceId();
-        if (PROCESS_INSTANCE_ID.isEmpty()){
+        INSTANCE_ID=processInstance.getId();
+        if (processInstance.getId().isEmpty()){
             log.warn("启动流程实例失败");
             return false;
         }
@@ -89,8 +91,8 @@ public class ProcessServiceImpl implements ProcessService {
             processDefinitionId=processDefinition.getId();
         }
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId,businessKey,map);
-        PROCESS_INSTANCE_ID=processInstance.getProcessInstanceId();
-        if (PROCESS_INSTANCE_ID.isEmpty()){
+        INSTANCE_ID=processInstance.getId();
+        if (INSTANCE_ID.isEmpty()){
             log.warn("启动流程实例失败");
             return false;
         }
@@ -98,10 +100,11 @@ public class ProcessServiceImpl implements ProcessService {
         return true;
     }
     /**
-     * 获取流程实例id
+     * 获取实例的事件数量
      */
     @Override
-    public String processInstanceId() {
-        return PROCESS_INSTANCE_ID;
+    public Integer getEventSize() {
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(INSTANCE_ID);
+        return activeActivityIds.size();
     }
 }

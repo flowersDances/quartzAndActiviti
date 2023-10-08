@@ -25,12 +25,17 @@ public class ProcessController {
         String deploymentId=processDeploy.getDeploymentId();
         boolean startProcessStatus = processService.startProcess(deploymentId);
         if (startProcessStatus) {
-            String processInstanceId = processService.processInstanceId();
-            System.out.println("流程实例id："+processInstanceId);
-            //开启任务调度
-            scheduler.listenerRedisData();
             return Result.ok("实例启动成功");
         }
         return Result.error("实例启动失败");
+    }
+
+    /**
+     * 开启任务调度
+     */
+    @GetMapping("/startScheduler")
+    public Result startScheduler(){
+        scheduler.listenerRedisData();
+        return Result.ok();
     }
 }

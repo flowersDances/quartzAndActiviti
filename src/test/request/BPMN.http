@@ -3,8 +3,8 @@ POST http://localhost:8083/bpmn/deploy
 Content-Type: application/json
 
 {
-  "processImgName": "SignalDemo1.png",
-  "processFileName": "SignalDemo1.bpmn20.xml"
+  "processImgName": "SignalDemo2.png",
+  "processFileName": "SignalDemo2.bpmn20.xml"
 }
 
 ### 启动实例
@@ -12,5 +12,13 @@ POST http://localhost:8083/process/startProcess
 Content-Type: application/json
 
 {
-  "deploymentId": "3da0981d-64e4-11ee-8545-005056c00001"
+  "deploymentId": "f192b200-6591-11ee-ba2b-005056c00001"
 }
+
+### 开启任务调度
+GET http://localhost:8083/process/startScheduler
+Accept: application/json
+
+### 查询任务数量
+GET http://localhost:8083/task/size
+Accept: application/json

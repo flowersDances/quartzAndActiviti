@@ -6,5 +6,5 @@ public interface ProcessService {
     boolean startProcess(String deploymentId,String businessKey);
     boolean startProcess(String deploymentId);
     boolean startProcess(String deploymentId, String businessKey, Map<String,Object> map);
-    String processInstanceId();
+    Integer getEventSize();
 }
