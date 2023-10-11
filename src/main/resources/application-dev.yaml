@@ -14,6 +14,8 @@ spring:
     db-history-used: true
     history-level: full
     check-process-definitions: false
+#   不加无法触发定时器任务 xml文件加了不生效
+    async-executor-activate: true
   servlet:
     multipart:
       max-file-size: 10MB

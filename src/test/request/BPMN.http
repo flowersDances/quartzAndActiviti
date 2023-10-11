@@ -3,8 +3,8 @@ POST http://localhost:8083/bpmn/deploy
 Content-Type: application/json
 
 {
-  "processImgName": "SignalDemo2.png",
-  "processFileName": "SignalDemo2.bpmn20.xml"
+  "processImgName": "SignalDemo4.png",
+  "processFileName": "SignalDemo4.bpmn20.xml"
 }
 
 ### 启动实例

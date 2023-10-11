@@ -4,6 +4,10 @@ import com.cai.quartzandactiviti.pojo.entity.ProcessFile;
 import com.cai.quartzandactiviti.response.Result;
 import com.cai.quartzandactiviti.service.DeploymentService;
 import lombok.extern.slf4j.Slf4j;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 @RestController
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class DeployController {
     @Autowired
     DeploymentService deploymentService;
+    @Autowired
+    RuntimeService runtimeService;
     /**
      * 根据流程图部署文件
      */
